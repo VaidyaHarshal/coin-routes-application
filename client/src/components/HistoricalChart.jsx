@@ -5,6 +5,11 @@ import "chartjs-adapter-date-fns"; // Import the date adapter
 
 const HistoricalPriceChart = ({ pair }) => {
   const [historicalData, setHistoricalData] = useState([]);
+  const [config, setConfig] = useState({
+    lineColor: "#4bc0c0", // Default hex color
+    showDataPoints: true,
+    lineTension: 0.1,
+  });
 
   useEffect(() => {
     const fetchHistoricalData = async () => {
@@ -35,15 +40,18 @@ const HistoricalPriceChart = ({ pair }) => {
         label: "Historical Price",
         data: historicalData.map((d) => ({ x: d.time, y: d.price })),
         fill: false,
-        borderColor: "rgba(75,192,192,1)",
-        tension: 0.1,
+        borderColor: config.lineColor,
+        tension: config.lineTension,
+        pointRadius: config.showDataPoints ? 3 : 0, // Show/hide data points
       },
     ],
   };
 
   return (
-    <div className="historical-price-chart mb-4">
-      <h3 className="text-xl font-semibold mb-2">Historical Price Chart</h3>
+    <div className="historical-price-chart mb-4 p-4 bg-white shadow-md rounded-lg">
+      <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-gray-300 pb-2">
+        Historical Price Chart
+      </h3>
       <Line
         data={chartData}
         options={{
@@ -52,11 +60,11 @@ const HistoricalPriceChart = ({ pair }) => {
               type: "time",
               time: {
                 unit: "day",
-                tooltipFormat: "MMM d, yyyy", // Correct date format
+                tooltipFormat: "MMM d, yyyy",
                 displayFormats: {
-                  day: "MMM d", // Format for day labels
-                  month: "MMM yyyy", // Format for month labels
-                  year: "yyyy", // Format for year labels
+                  day: "MMM d",
+                  month: "MMM yyyy",
+                  year: "yyyy",
                 },
               },
               title: {
@@ -73,6 +81,44 @@ const HistoricalPriceChart = ({ pair }) => {
           },
         }}
       />
+      <div className="mt-4 space-y-4">
+        <label className="text-sm font-medium text-gray-700 flex items-center">
+          Line Color:
+          <input
+            type="color"
+            value={config.lineColor}
+            onChange={(e) =>
+              setConfig({ ...config, lineColor: e.target.value })
+            }
+            className="ml-3 h-8 w-8 border-none rounded-sm cursor-pointer"
+          />
+        </label>
+        <label className="text-sm font-medium text-gray-700 flex items-center">
+          Show Data Points:
+          <input
+            type="checkbox"
+            checked={config.showDataPoints}
+            onChange={(e) =>
+              setConfig({ ...config, showDataPoints: e.target.checked })
+            }
+            className="ml-3 h-5 w-5 text-blue-600 border-gray-300 rounded cursor-pointer"
+          />
+        </label>
+        <label className="text-sm font-medium text-gray-700 flex items-center">
+          Line Tension:
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={config.lineTension}
+            onChange={(e) =>
+              setConfig({ ...config, lineTension: parseFloat(e.target.value) })
+            }
+            className="ml-3 w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
+          />
+        </label>
+      </div>
     </div>
   );
 };
