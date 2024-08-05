@@ -9,7 +9,6 @@ const OPTIONS = [
 ];
 
 const Dropdown = ({ onSelectionChange }) => {
-  // Handle selection change
   const handleChange = (event) => {
     const selectedOptions = Array.from(
       event.target.selectedOptions,
