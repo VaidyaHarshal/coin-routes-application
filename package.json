@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https:/VaidyaHarshal.github.io/coin-routes-application",
+  "homepage": "https://vaidyaharshal.github.io/coin-routes-application",
   "scripts": {
     "start": "vite",
     "build": "vite build",
