@@ -13,13 +13,13 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-4xl font-bold text-gray-900 text-center mb-8">
+    <div className="min-h-screen p-8 bg-slate-900">
+      <h1 className="text-4xl font-bold text-white text-center mb-8">
         CoinRoutes Trading View
       </h1>
       <Dropdown onSelectionChange={handleSelectionChange} />
       {selectedPairs.length === 0 ? (
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-white mt-4">
           Select a pair to view the data.
         </p>
       ) : (

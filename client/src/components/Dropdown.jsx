@@ -19,12 +19,20 @@ const Dropdown = ({ onSelectionChange }) => {
         multiple
         value={selectedPairs}
         onChange={handleChange}
-        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-transform transform hover:scale-105"
+        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer "
       >
-        <option value="BTC-USD">BTC-USD</option>
-        <option value="ETH-USD">ETH-USD</option>
-        <option value="LTC-USD">LTC-USD</option>
-        <option value="BCH-USD">BCH-USD</option>
+        <option value="BTC-USD" className="hover:bg-gray-300 font-semibold">
+          BTC-USD
+        </option>
+        <option value="ETH-USD" className="hover:bg-gray-300 font-semibold">
+          ETH-USD
+        </option>
+        <option value="LTC-USD" className="hover:bg-gray-300 font-semibold">
+          LTC-USD
+        </option>
+        <option value="BCH-USD" className="hover:bg-gray-300 font-semibold">
+          BCH-USD
+        </option>
       </select>
     </div>
   );

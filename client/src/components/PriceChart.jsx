@@ -118,6 +118,13 @@ const PriceChart = ({ pair }) => {
       <Line
         data={chartData}
         options={{
+          plugins: {
+            legend: {
+              onClick: (e, legendItem, legend) => {
+                e.stopPropagation();
+              },
+            },
+          },
           scales: {
             y: {
               type: "linear",

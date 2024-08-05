@@ -127,6 +127,13 @@ const HistoricalPriceChart = ({ pair }) => {
       <Line
         data={chartData}
         options={{
+          plugins: {
+            legend: {
+              onClick: (e, legendItem, legend) => {
+                e.stopPropagation();
+              },
+            },
+          },
           scales: {
             x: {
               type: "time",
