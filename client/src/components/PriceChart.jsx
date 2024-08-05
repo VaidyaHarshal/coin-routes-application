@@ -37,6 +37,8 @@ const PriceChart = ({ pair }) => {
 
   useEffect(() => {
     const websocket = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
+    const tempData = [];
+
     websocket.onopen = () => {
       websocket.send(
         JSON.stringify({
@@ -49,16 +51,19 @@ const PriceChart = ({ pair }) => {
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "ticker" && data.product_id === pair) {
-        setPriceData((prevData) => [
-          ...prevData.slice(-100), // Limit to 100 data points for display
-          { time: new Date(), price: parseFloat(data.price) },
-        ]);
+        tempData.push({ time: new Date(), price: parseFloat(data.price) });
+        if (tempData.length > 100) tempData.shift(); // Limit to 100 data points for display
       }
     };
 
     setWs(websocket);
 
+    const interval = setInterval(() => {
+      setPriceData([...tempData]);
+    }, 5000);
+
     return () => {
+      clearInterval(interval);
       if (ws) {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(
