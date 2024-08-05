@@ -27,7 +27,7 @@ const App = () => {
             key={pair}
             className="widget-container mt-8 p-6 bg-white shadow-lg rounded-xl border border-gray-200"
           >
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               {pair}
             </h2>
             <div className="space-y-6">

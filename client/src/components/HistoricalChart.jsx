@@ -99,7 +99,7 @@ const HistoricalPriceChart = ({ pair }) => {
   };
 
   return (
-    <div className="historical-price-chart mb-4 p-4 bg-white shadow-md rounded-lg">
+    <div className="p-4 bg-white shadow-lg rounded-xl border border-gray-200 mb-4">
       <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-gray-300 pb-2">
         Historical Price Chart
       </h3>
@@ -109,7 +109,7 @@ const HistoricalPriceChart = ({ pair }) => {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="ml-3 p-2 border border-gray-300 rounded-md cursor-pointer"
+            className="ml-3 p-2 border border-gray-300 rounded-md cursor-pointer focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
           >
             {Object.entries(TIME_RANGE_OPTIONS).map(([key, { label }]) => (
               <option key={key} value={key}>

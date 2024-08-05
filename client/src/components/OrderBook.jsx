@@ -164,7 +164,7 @@ const OrderBook = ({ pair }) => {
   }, [orderBook.asks, priceIncrement]);
 
   return (
-    <div className="order-book border border-gray-300 p-4 rounded-md shadow-sm">
+    <div className="p-4 bg-white shadow-lg rounded-xl border border-gray-200 mb-4">
       <h3 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-gray-300 pb-2">
         Order Book
       </h3>
@@ -180,7 +180,7 @@ const OrderBook = ({ pair }) => {
           id="bucket-size"
           value={priceIncrement}
           onChange={(e) => setPriceIncrement(parseFloat(e.target.value))}
-          className="block w-full border-gray-300 bg-white rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+          className="ml-1 p-2 border border-gray-300 rounded-md cursor-pointer focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
         >
           {BUCKET_SIZES.map((size) => (
             <option key={size} value={size} className="text-gray-900">
