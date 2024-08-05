@@ -3,6 +3,50 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import "chartjs-adapter-date-fns";
 
+const TIME_RANGE_OPTIONS = {
+  "1d": {
+    granularity: 3600,
+    label: "Last 24 Hours",
+    timeUnit: "hour",
+    displayFormat: "MMM d, h a",
+    range: 24 * 60 * 60 * 1000, // 1 day
+  },
+  "1w": {
+    granularity: 21600,
+    label: "Last 7 Days",
+    timeUnit: "day",
+    displayFormat: "MMM d",
+    range: 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+  "1m": {
+    granularity: 86400,
+    label: "Last Month",
+    timeUnit: "day",
+    displayFormat: "MMM d",
+    range: 30 * 24 * 60 * 60 * 1000, // 1 month
+  },
+  "6m": {
+    granularity: 86400,
+    label: "Last 6 Months",
+    timeUnit: "month",
+    displayFormat: "MMM yyyy",
+    range: 6 * 30 * 24 * 60 * 60 * 1000, // 6 months
+  },
+};
+
+const fetchHistoricalData = async (pair, granularity) => {
+  const url = `https://api.pro.coinbase.com/products/${pair}/candles?granularity=${granularity}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  return data
+    .map(([time, , , , close]) => ({
+      time: new Date(time * 1000),
+      price: close,
+    }))
+    .sort((a, b) => a.time - b.time);
+};
+
 const HistoricalPriceChart = ({ pair }) => {
   const [historicalData, setHistoricalData] = useState([]);
   const [config, setConfig] = useState({
@@ -12,65 +56,16 @@ const HistoricalPriceChart = ({ pair }) => {
   });
   const [timeRange, setTimeRange] = useState("1d");
 
-  const timeRangeOptions = {
-    "1d": {
-      granularity: 3600,
-      label: "Last 24 Hours",
-      timeUnit: "hour",
-      displayFormat: "MMM d, h a",
-      range: 24 * 60 * 60 * 1000, // 1 day
-    },
-    "1w": {
-      granularity: 21600,
-      label: "Last 7 Days",
-      timeUnit: "day",
-      displayFormat: "MMM d",
-      range: 7 * 24 * 60 * 60 * 1000, // 7 days
-    },
-    "1m": {
-      granularity: 86400,
-      label: "Last Month",
-      timeUnit: "day",
-      displayFormat: "MMM d",
-      range: 30 * 24 * 60 * 60 * 1000, // 1 month
-    },
-    "6m": {
-      granularity: 86400,
-      label: "Last 6 Months",
-      timeUnit: "month",
-      displayFormat: "MMM yyyy",
-      range: 6 * 30 * 24 * 60 * 60 * 1000, // 6 months
-    },
-  };
-
-  const fetchHistoricalData = async (pair, granularity) => {
-    const url = `https://api.pro.coinbase.com/products/${pair}/candles?granularity=${granularity}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const formattedData = data.map(
-      ([time, low, high, open, close, volume]) => ({
-        time: new Date(time * 1000), // Convert to milliseconds
-        price: close,
-      })
-    );
-
-    const sortedData = formattedData.sort((a, b) => a.time - b.time);
-
-    setHistoricalData(sortedData);
-  };
-
   useEffect(() => {
-    const { granularity } = timeRangeOptions[timeRange] || {};
+    const { granularity } = TIME_RANGE_OPTIONS[timeRange] || {};
     if (granularity) {
-      fetchHistoricalData(pair, granularity);
+      fetchHistoricalData(pair, granularity).then(setHistoricalData);
     }
   }, [pair, timeRange]);
 
-  const { timeUnit = "day", displayFormat = "MMM d" } =
-    timeRangeOptions[timeRange] || {};
+  const { timeUnit, displayFormat, range } =
+    TIME_RANGE_OPTIONS[timeRange] || {};
 
-  const range = timeRangeOptions[timeRange]?.range;
   const filteredData = (() => {
     if (timeRange === "1m") {
       const oneMonthAgo = new Date();
@@ -116,7 +111,7 @@ const HistoricalPriceChart = ({ pair }) => {
             onChange={(e) => setTimeRange(e.target.value)}
             className="ml-3 p-2 border border-gray-300 rounded-md cursor-pointer"
           >
-            {Object.entries(timeRangeOptions).map(([key, { label }]) => (
+            {Object.entries(TIME_RANGE_OPTIONS).map(([key, { label }]) => (
               <option key={key} value={key}>
                 {label}
               </option>
@@ -157,14 +152,14 @@ const HistoricalPriceChart = ({ pair }) => {
                 source: "data",
                 autoSkip: timeRange === "1m",
                 padding: 10,
-                stepSize: timeRange === "6m" ? 1 : undefined, // Ensures monthly ticks for 6 months range
+                stepSize: timeRange === "6m" ? 1 : undefined,
               },
               grid: {
                 drawOnChartArea: true,
                 drawBorder: false,
                 borderColor: "#e0e0e0",
                 borderWidth: 1,
-                offset: true, // Align x-axis with y-axis
+                offset: true,
               },
             },
             y: {

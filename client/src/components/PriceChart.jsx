@@ -18,7 +18,7 @@ const formatDate = (date) => {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "America/New_York", // Adjust timezone as needed
+    timeZone: "America/New_York",
   };
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
@@ -29,8 +29,8 @@ const PriceChart = ({ pair }) => {
 
   // Local state for chart configuration
   const [config, setConfig] = useState({
-    chartType: "line", // or 'bar', etc.
-    lineColor: "#4bc0c0", // Default hex color
+    chartType: "line",
+    lineColor: "#4bc0c0",
     showDataPoints: true,
     lineTension: 0.1,
   });
@@ -52,7 +52,7 @@ const PriceChart = ({ pair }) => {
       const data = JSON.parse(event.data);
       if (data.type === "ticker" && data.product_id === pair) {
         tempData.push({ time: new Date(), price: parseFloat(data.price) });
-        if (tempData.length > 100) tempData.shift(); // Limit to 100 data points for display
+        if (tempData.length > 100) tempData.shift();
       }
     };
 
@@ -87,12 +87,11 @@ const PriceChart = ({ pair }) => {
         fill: false,
         borderColor: config.lineColor,
         tension: config.lineTension,
-        pointRadius: config.showDataPoints ? 3 : 0, // show/hide data points
+        pointRadius: config.showDataPoints ? 3 : 0,
       },
     ],
   };
 
-  // Get the latest price
   const latestPrice =
     priceData.length > 0
       ? formatCurrency(priceData[priceData.length - 1].price)

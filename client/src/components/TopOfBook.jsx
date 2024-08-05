@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const TopOfBook = ({ pair }) => {
   const [topOfBook, setTopOfBook] = useState({ bid: null, ask: null });
@@ -14,14 +14,14 @@ const TopOfBook = ({ pair }) => {
     showVolume24h: true,
   });
 
-  const formatCurrency = (value) => {
+  const formatCurrency = useCallback((value) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
-  };
+  }, []);
 
   useEffect(() => {
     const websocket = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
@@ -41,7 +41,7 @@ const TopOfBook = ({ pair }) => {
         const bestAsk = parseFloat(data.best_ask);
         setTopOfBook({ bid: bestBid, ask: bestAsk });
         setSpread(bestAsk - bestBid);
-        setVolume24h(parseFloat(data.volume_24h) || 0); // Convert to number and handle NaN
+        setVolume24h(parseFloat(data.volume_24h) || 0);
       }
     };
 
@@ -62,7 +62,6 @@ const TopOfBook = ({ pair }) => {
     };
   }, [pair]);
 
-  // Handle checkbox changes
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setConfig((prevConfig) => ({

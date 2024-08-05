@@ -7,10 +7,10 @@ import React, {
 } from "react";
 import _ from "lodash";
 
-// Helper function to format numbers with fixed decimal places
+// Function to format numbers with fixed decimal places
 const formatNumber = (number, decimals = 4) => Number(number).toFixed(decimals);
 
-// Helper function to aggregate prices based on the specified increment
+// Function to aggregate prices based on the specified increment
 const aggregateByIncrement = (orders, increment) => {
   const aggregated = {};
 
@@ -20,7 +20,6 @@ const aggregateByIncrement = (orders, increment) => {
 
     if (isNaN(priceFloat) || isNaN(sizeFloat)) return;
 
-    // Round the price to the nearest increment
     const roundedPrice = Math.round(priceFloat / increment) * increment;
 
     if (!aggregated[roundedPrice]) {
@@ -36,11 +35,11 @@ const aggregateByIncrement = (orders, increment) => {
 };
 
 const BUCKET_SIZES = [0.01, 0.05, 0.1];
-const MAX_ROWS = 10; // Maximum number of rows to display
+const MAX_ROWS = 10;
 
 const OrderBook = ({ pair }) => {
   const [orderBook, setOrderBook] = useState({ bids: [], asks: [] });
-  const [priceIncrement, setPriceIncrement] = useState(BUCKET_SIZES[0]); // Default to the first option
+  const [priceIncrement, setPriceIncrement] = useState(BUCKET_SIZES[0]);
   const wsRef = useRef(null);
 
   const handleWebSocketData = useCallback(
@@ -85,7 +84,6 @@ const OrderBook = ({ pair }) => {
     [pair]
   );
 
-  // Throttle the WebSocket updates
   const throttledHandleWebSocketData = useCallback(
     _.throttle(handleWebSocketData, 100),
     [handleWebSocketData]
@@ -94,7 +92,7 @@ const OrderBook = ({ pair }) => {
   useEffect(() => {
     let ws;
     let retryAttempts = 0;
-    const maxRetries = 5; // Maximum number of retry attempts
+    const maxRetries = 5;
 
     const createWebSocket = () => {
       ws = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
@@ -108,7 +106,7 @@ const OrderBook = ({ pair }) => {
             channels: [{ name: "level2_batch", product_ids: [pair] }],
           })
         );
-        retryAttempts = 0; // Reset retry attempts on successful connection
+        retryAttempts = 0;
       };
 
       ws.onmessage = (event) => {
@@ -118,7 +116,7 @@ const OrderBook = ({ pair }) => {
 
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
-        ws.close(); // Close the connection to trigger onclose event
+        ws.close(); // Close the connection
       };
 
       ws.onclose = (event) => {
@@ -130,9 +128,9 @@ const OrderBook = ({ pair }) => {
 
         if (retryAttempts < maxRetries) {
           retryAttempts++;
-          const retryDelay = Math.min(1000 * Math.pow(2, retryAttempts), 30000); // Exponential backoff
+          const retryDelay = Math.min(1000 * Math.pow(2, retryAttempts), 30000);
           console.log(`Retrying in ${retryDelay / 1000} seconds...`);
-          setTimeout(createWebSocket, retryDelay); // Retry connection after delay
+          setTimeout(createWebSocket, retryDelay); // Retry connection
         } else {
           console.error("Max retry attempts reached. Could not reconnect.");
         }
@@ -193,13 +191,11 @@ const OrderBook = ({ pair }) => {
       </div>
 
       <div className="flex justify-between h-[420px] bg-gray-50 p-4 rounded-lg shadow-md">
-        {/* Bids Section */}
         <div className="w-1/2 pr-2 bg-white rounded-lg shadow-inner overflow-hidden">
           <h4 className="text-xl font-semibold mb-4 text-center text-gray-800 border-b-2 border-green-500 pb-2">
             Bids
           </h4>
           <div className="flex">
-            {/* Price Column */}
             <div className="w-1/2 text-center border-r border-gray-300">
               <h5 className="font-medium mb-2 text-gray-600">Price</h5>
               <ul className="list-none text-green-500 flex-1 overflow-y-auto">
@@ -213,7 +209,6 @@ const OrderBook = ({ pair }) => {
                 ))}
               </ul>
             </div>
-            {/* Market Size Column */}
             <div className="w-1/2 text-center">
               <h5 className="font-medium mb-2 text-gray-600">Market Size</h5>
               <ul className="list-none text-green-500 flex-1 overflow-y-auto">
@@ -229,14 +224,11 @@ const OrderBook = ({ pair }) => {
             </div>
           </div>
         </div>
-
-        {/* Asks Section */}
         <div className="w-1/2 pl-2 bg-white rounded-lg shadow-inner overflow-hidden">
           <h4 className="text-xl font-semibold mb-4 text-center text-gray-800 border-b-2 border-red-500 pb-2">
             Asks
           </h4>
           <div className="flex">
-            {/* Price Column */}
             <div className="w-1/2 text-center border-r border-gray-300">
               <h5 className="font-medium mb-2 text-gray-600">Price</h5>
               <ul className="list-none text-red-500 flex-1 overflow-y-auto">
@@ -250,7 +242,6 @@ const OrderBook = ({ pair }) => {
                 ))}
               </ul>
             </div>
-            {/* Market Size Column */}
             <div className="w-1/2 text-center">
               <h5 className="font-medium mb-2 text-gray-600">Market Size</h5>
               <ul className="list-none text-red-500 flex-1 overflow-y-auto">

@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
+
+// Array of currency pairs
+const OPTIONS = [
+  { value: "BTC-USD", label: "BTC-USD" },
+  { value: "ETH-USD", label: "ETH-USD" },
+  { value: "LTC-USD", label: "LTC-USD" },
+  { value: "BCH-USD", label: "BCH-USD" },
+];
 
 const Dropdown = ({ onSelectionChange }) => {
-  const [selectedPairs, setSelectedPairs] = useState([]);
-
+  // Handle selection change
   const handleChange = (event) => {
-    const selectedOptions = Array.from(event.target.selectedOptions);
-    const pairs = selectedOptions.map((option) => option.value);
-    setSelectedPairs(pairs);
-    onSelectionChange(pairs);
+    const selectedOptions = Array.from(
+      event.target.selectedOptions,
+      (option) => option.value
+    );
+    onSelectionChange(selectedOptions);
   };
 
   return (
@@ -17,22 +25,18 @@ const Dropdown = ({ onSelectionChange }) => {
       </label>
       <select
         multiple
-        value={selectedPairs}
         onChange={handleChange}
-        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer "
+        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
       >
-        <option value="BTC-USD" className="hover:bg-gray-300 font-semibold">
-          BTC-USD
-        </option>
-        <option value="ETH-USD" className="hover:bg-gray-300 font-semibold">
-          ETH-USD
-        </option>
-        <option value="LTC-USD" className="hover:bg-gray-300 font-semibold">
-          LTC-USD
-        </option>
-        <option value="BCH-USD" className="hover:bg-gray-300 font-semibold">
-          BCH-USD
-        </option>
+        {OPTIONS.map(({ value, label }) => (
+          <option
+            key={value}
+            value={value}
+            className="hover:bg-gray-300 font-semibold"
+          >
+            {label}
+          </option>
+        ))}
       </select>
     </div>
   );

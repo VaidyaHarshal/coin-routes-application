@@ -4,6 +4,7 @@ import TopOfBook from "./components/TopOfBook";
 import PriceChart from "./components/PriceChart";
 import OrderBook from "./components/OrderBook";
 import HistoricalPriceChart from "./components/HistoricalChart";
+import Description from "./components/Description";
 
 const App = () => {
   const [selectedPairs, setSelectedPairs] = useState([]);
@@ -19,9 +20,7 @@ const App = () => {
       </h1>
       <Dropdown onSelectionChange={handleSelectionChange} />
       {selectedPairs.length === 0 ? (
-        <p className="text-center text-white mt-4">
-          Select a pair to view the data.
-        </p>
+        <Description />
       ) : (
         selectedPairs.map((pair) => (
           <div
