@@ -18,20 +18,20 @@ const Dropdown = ({ onSelectionChange }) => {
   };
 
   return (
-    <div className="mb-8 p-4 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg shadow-lg">
+    <div className="mb-8 p-4 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg shadow-lg">
       <label className="block text-2xl font-semibold text-white mb-4">
         Select Currency Pairs:
       </label>
       <select
         multiple
         onChange={handleChange}
-        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
+        className="block w-full p-4 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer text-center"
       >
         {OPTIONS.map(({ value, label }) => (
           <option
             key={value}
             value={value}
-            className="hover:bg-gray-300 font-semibold"
+            className="hover:bg-gray-300 font-bold text-lg"
           >
             {label}
           </option>
