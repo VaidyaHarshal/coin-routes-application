@@ -36,22 +36,26 @@ const PriceChart = ({ pair }) => {
   });
 
   useEffect(() => {
-    const websocket = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
+    const websocket = new WebSocket(`wss://advanced-trade-ws.coinbase.com`);
     const tempData = [];
 
     websocket.onopen = () => {
       websocket.send(
         JSON.stringify({
           type: "subscribe",
-          channels: [{ name: "ticker", product_ids: [pair] }],
+          product_ids: [pair],
+          channel: "ticker",
         })
       );
     };
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === "ticker" && data.product_id === pair) {
-        tempData.push({ time: new Date(), price: parseFloat(data.price) });
+      if (data.channel === "ticker" && data.events && data.events[0].tickers) {
+        tempData.push({
+          time: new Date(),
+          price: parseFloat(data.events[0].tickers[0].price),
+        });
         if (tempData.length > 100) tempData.shift();
       }
     };
@@ -119,7 +123,7 @@ const PriceChart = ({ pair }) => {
         options={{
           plugins: {
             legend: {
-              onClick: (e, legendItem, legend) => {
+              onClick: (e) => {
                 e.stopPropagation();
               },
             },

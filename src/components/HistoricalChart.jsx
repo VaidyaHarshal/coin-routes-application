@@ -124,7 +124,7 @@ const HistoricalPriceChart = ({ pair }) => {
         options={{
           plugins: {
             legend: {
-              onClick: (e, legendItem, legend) => {
+              onClick: (e) => {
                 e.stopPropagation();
               },
             },

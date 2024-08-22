@@ -45,7 +45,6 @@ const OrderBook = ({ pair }) => {
   const handleWebSocketData = useCallback(
     (data) => {
       if (data.type === "snapshot" && data.product_id === pair) {
-        console.log("Snapshot data:", data);
         setOrderBook({
           bids: data.bids.slice(0, MAX_ROWS),
           asks: data.asks.slice(0, MAX_ROWS),
@@ -95,15 +94,14 @@ const OrderBook = ({ pair }) => {
     const maxRetries = 5;
 
     const createWebSocket = () => {
-      ws = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
+      ws = new WebSocket(`wss://ws-feed.exchange.coinbase.com`);
       wsRef.current = ws;
-
       ws.onopen = () => {
-        console.log("WebSocket connection opened");
         ws.send(
           JSON.stringify({
             type: "subscribe",
-            channels: [{ name: "level2_batch", product_ids: [pair] }],
+            product_ids: [pair],
+            channels: ["level2_batch"],
           })
         );
         retryAttempts = 0;
@@ -204,7 +202,7 @@ const OrderBook = ({ pair }) => {
                     key={index}
                     className="flex justify-center py-1 border-b border-gray-200"
                   >
-                    <span className="text-sm">${formatNumber(price)}</span>
+                    <span className="text-sm">${formatNumber(price, 2)}</span>
                   </li>
                 ))}
               </ul>
@@ -237,7 +235,7 @@ const OrderBook = ({ pair }) => {
                     key={index}
                     className="flex justify-center py-1 border-b border-gray-200"
                   >
-                    <span className="text-sm">${formatNumber(price)}</span>
+                    <span className="text-sm">${formatNumber(price, 2)}</span>
                   </li>
                 ))}
               </ul>

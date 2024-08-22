@@ -24,41 +24,45 @@ const TopOfBook = ({ pair }) => {
   }, []);
 
   useEffect(() => {
-    const websocket = new WebSocket(`wss://ws-feed.pro.coinbase.com`);
+    const websocket = new WebSocket(`wss://advanced-trade-ws.coinbase.com`);
+
     websocket.onopen = () => {
       websocket.send(
         JSON.stringify({
           type: "subscribe",
-          channels: [{ name: "ticker", product_ids: [pair] }],
+          channel: "ticker", // Update according to the new API
+          product_ids: [pair],
         })
       );
     };
 
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === "ticker" && data.product_id === pair) {
-        const bestBid = parseFloat(data.best_bid);
-        const bestAsk = parseFloat(data.best_ask);
-        setTopOfBook({ bid: bestBid, ask: bestAsk });
-        setSpread(bestAsk - bestBid);
-        setVolume24h(parseFloat(data.volume_24h) || 0);
+      if (data.channel === "ticker" && data.events && data.events[0].tickers) {
+        const ticker = data.events[0].tickers[0];
+        if (ticker.product_id === pair) {
+          const bestBid = parseFloat(ticker.best_bid);
+          const bestAsk = parseFloat(ticker.best_ask);
+          setTopOfBook({ bid: bestBid, ask: bestAsk });
+          setSpread(bestAsk - bestBid);
+          setVolume24h(parseFloat(ticker.volume_24_h) || 0);
+        }
       }
     };
 
     setWs(websocket);
 
     return () => {
-      if (ws) {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(
-            JSON.stringify({
-              type: "unsubscribe",
-              channels: [{ name: "ticker", product_ids: [pair] }],
-            })
-          );
-        }
-        ws.close();
+      if (websocket.readyState === WebSocket.OPEN) {
+        websocket.send(
+          JSON.stringify({
+            type: "unsubscribe",
+            channel: "ticker", // Update according to the new API
+            product_ids: [pair],
+          })
+        );
       }
+      websocket.close();
     };
   }, [pair]);
 
